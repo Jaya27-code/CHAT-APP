@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stranger Things Chat</title>
+
+    <style>
+        /* BODY BACKGROUND IMAGE */
+        body {
+            background: url("ST_print_fixedtraps.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            font-family: monospace;
+            color: red;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* CHAT CARD */
+        .chat-card {
+            width: 400px;
+            background: rgba(0,0,0,0.5); /* semi-transparent to see background */
+            border: 2px solid red;
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 0 40px rgba(255,0,0,0.7), inset 0 0 60px rgba(255,0,0,0.4);
+            animation: flicker 3s infinite;
+            overflow: hidden;
+        }
+
+        /* HEADER */
+        h2 {
+            text-align: center;
+            color: red;
+            text-shadow: 0 0 15px red, 0 0 30px darkred;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+        }
+
+        /* CHAT BOX */
+        #chat {
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+
+            background: rgba(0,0,0,0.3); /* slightly transparent so background shows */
+            box-shadow: 0 0 10px red;
+        }
+
+        /* MESSAGE STYLE */
+        #chat div {
+            background: rgba(0,0,0,0.6);
+            padding: 8px;
+            margin-bottom: 8px;
+            border-left: 4px solid red;
+            border-radius: 6px;
+            max-width: 100%;
+            word-wrap: break-word;
+        }
+
+
+        /* INPUTS */
+        input, button {
+            background: black;
+            color: red;
+            border: 1px solid red;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        button:hover {
+            background: red;
+            color: black;
+            box-shadow: 0 0 10px red, inset 0 0 20px darkred;
+        }
+
+        /* FLICKER ANIMATION */
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+            20%, 22%, 24%, 55% { opacity: 0.85; }
+        }
+
+        /* PARTICLES */
+        .particle {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.7;
+            pointer-events: none;
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 0.7; }
+            100% { transform: translateY(-200px) scale(0.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-card">
+    <h2>REAL-TIME CHAT</h2>
+
+    <div id="chat"></div>
+
+    <input id="senderInput" placeholder="Your name">
+    <input id="messageInput" placeholder="Message / Image URL">
+    <button id="sendBtn">SEND</button>
+</div>
+
+<script>
+    const chat = document.getElementById("chat");
+    const senderInput = document.getElementById("senderInput");
+    const messageInput = document.getElementById("messageInput");
+    const sendBtn = document.getElementById("sendBtn");
+
+    /* SHOW MESSAGE FUNCTION */
+    function showMessage(sender, content) {
+        const div = document.createElement("div");
+        if(content.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+            const img = document.createElement("img");
+            img.src = content;
+            div.appendChild(img);
+        } else {
+            div.textContent = sender + ": " + content;
+        }
+        chat.appendChild(div);
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    /* SEND BUTTON */
+    sendBtn.onclick = () => {
+        const sender = senderInput.value || "Anonymous";
+        const content = messageInput.value;
+        if(!content) return;
+        showMessage(sender, content);
+        messageInput.value = "";
+    };
+
+    /* PARTICLES */
+    const chatCard = document.querySelector('.chat-card');
+
+    function createParticle() {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        particle.style.left = Math.random() * chatCard.offsetWidth + 'px';
+        particle.style.top = chatCard.offsetHeight + 'px';
+        const size = 2 + Math.random() * 3;
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+        particle.style.animationDuration = 2 + Math.random() * 3 + 's';
+        chatCard.appendChild(particle);
+        setTimeout(() => particle.remove(), parseFloat(particle.style.animationDuration)*1000);
+    }
+
+    setInterval(createParticle, 150);
+</script>
+
+</body>
+</html>
